@@ -66,6 +66,7 @@ fred:
       unemployment: SAND706URN
   rates:
       fed_funds: FEDFUNDS
+      prime: PRIME
       treasury_2yr: DGS2
       treasury_10yr: DGS10
       treasury_30yr: DGS30
