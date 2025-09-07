@@ -1,0 +1,66 @@
+fred:
+  metros:
+    atlanta:
+      housing: ATXRNSA
+      cpi: CUURA319SA0
+      unemployment: ATLA013URN
+    boston:
+      housing: BOXRNSA
+      cpi: CUURA103SA0
+      unemployment: BOST625URN
+    chicago:
+      housing: CHXRNSA
+      cpi: CUURA207SA0
+      unemployment: CHIC917URN
+    dallas:
+      housing: DAXRNSA
+      cpi: CUURA316SA0
+      unemployment: DALL148URN
+    detroit:
+      housing: DEXRNSA
+      cpi: CUURA208SA0
+      unemployment: DETR826URN
+    los_angeles:
+      housing: LXXRNSA
+      cpi: CUURA421SA0
+      unemployment: LOSA106UR
+    miami:
+      housing: MIXRNSA
+      cpi: CUURA320SA0
+      unemployment: MIAM112URN
+    minneapolis:
+      housing: MNXRNSA
+      cpi: CUUSA211SA0
+      unemployment: MINN427URN
+    new_york:
+      housing: NYXRNSA
+      cpi: CUURA101SA0
+      unemployment: NEWY636URN
+    phoenix:
+      housing: PHXRNSA
+      cpi: CUUSA429SA0
+      unemployment: PHOE004UR
+    san_francisco:
+      housing: SFXRNSA
+      cpi: CUURA422SA0
+      unemployment: SANF806URN
+    seattle:
+      housing: SEXRNSA
+      cpi: CUURA423SA0
+      unemployment: SEAT653URN
+    tampa:
+      housing: TPXRNSA
+      cpi: CUUSA321SA0
+      unemployment: TAMP312URN
+    washington_dc:
+      housing: WDXRNSA
+      cpi: CUURA311SA0
+      unemployment: WASH911URN
+    denver:
+      housing: DNXRNSA
+      cpi: CUUSA433SA0
+      unemployment: DENV708URN
+    san_diego:
+      housing: SDXRSA
+      cpi: CUUSA424SA0
+      unemployment: SAND706URN
