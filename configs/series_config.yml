@@ -64,3 +64,10 @@ fred:
       housing: SDXRSA
       cpi: CUUSA424SA0
       unemployment: SAND706URN
+  rates:
+      fed_funds: FEDFUNDS
+      treasury_2yr: DGS2
+      treasury_10yr: DGS10
+      treasury_30yr: DGS30
+      mortgage_15yr: MORTGAGE15US
+      mortgage_30yr: MORTGAGE30US
