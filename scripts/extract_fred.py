@@ -21,65 +21,59 @@ with open("../configs/series_config.yml", "r") as f:
 metros = config["fred"]["metros"]
 rates = config["fred"]["rates"]
 
+# Fetch raw FRED series given a series_id
 def fetch_fred_series(series_id: str) -> pd.DataFrame:
     params = {
         "series_id": series_id,
         "api_key": FRED_API_KEY,
         "file_type": "json",
-        "observation_start": START_DATE
+        "observation_start": START_DATE,
     }
     
     response = requests.get(FRED_API_URL, params=params)
     response.raise_for_status()
     data = response.json()
 
+    if "observations" not in data or not data["observations"]:
+        return pd.DataFrame()
+
     # Convert API response to DataFrame
     df = pd.DataFrame(data["observations"])
-    
-    # Keep only relevant columns
-    df = df[["date", "value"]].copy()
-    
-    # Convert to numeric, invalid values become NaN
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
-    return df
 
-def extract_indicator(indicator: str) -> pd.DataFrame:
+    # Standardized bronze schema
+    df = df[["date", "value"]].copy()
+    df["series_id"] = series_id
+
+    return df[["date", "series_id", "value"]]
+
+# Extract raw FRED series for all metros, keep geo_id + series_id only.
+def extract_fred_metros() -> pd.DataFrame:
     total_data = []
-    
     for metro, series_dict in metros.items():
-        series_id = series_dict.get(indicator)
-        
-        # Fetch data from FRED API
-        df = fetch_fred_series(series_id)
-        
-        # Add metro identifier and rename value column
-        df["geo_id"] = metro
-        df.rename(columns={"value": indicator}, inplace=True)
-        total_data.append(df)
-        
-    # Combine all metro data into a single DataFrame    
-    result = pd.concat(total_data, ignore_index=True)       
-    return result
+        for _, series_id in series_dict.items():
+            df = fetch_fred_series(series_id)
+            if not df.empty:
+                df["geo_id"] = metro
+                total_data.append(df)
+    if total_data:
+        return pd.concat(total_data, ignore_index=True)
+    else:
+        return pd.DataFrame(columns=["date", "series_id", "geo_id", "value"])
 
-def extract_rates() -> pd.DataFrame:
+# Extract raw FRED rate series, keep rate_type + series_id only.
+def extract_fred_rates() -> pd.DataFrame:
     total_data = []
-    
     for rate_name, series_id in rates.items():
-        
-        # Fetch data from FRED API
         df = fetch_fred_series(series_id)
-        
-        # Add rate type identifier and rename value column
-        df["rate_type"] = rate_name
-        df.rename(columns={"value": "rate"}, inplace=True)
-        total_data.append(df)
-    
-    # Combine all rate data into a single DataFrame    
-    result = pd.concat(total_data, ignore_index=True)       
-    return result
+        if not df.empty:
+            df["rate_type"] = rate_name
+            total_data.append(df)
+    if total_data:
+        return pd.concat(total_data, ignore_index=True)
+    else:
+        return pd.DataFrame(columns=["date", "series_id", "rate_type", "value"])
 
-# Each DataFrame contains time series data with date, indicator value, and geo_id (for metros) or rate_type (for rates)
-housing_df = extract_indicator("housing")
-cpi_df = extract_indicator("cpi")
-unemployment_df = extract_indicator("unemployment")
-rates_df = extract_rates()
+# Collect metros and rates df to be stored in BigQuery "raw"
+metros_df = extract_fred_metros()
+rates_df = extract_fred_rates()
