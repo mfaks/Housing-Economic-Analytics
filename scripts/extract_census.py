@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import yaml
 from dotenv import load_dotenv
+from google.cloud import bigquery
 
 # Load environment variables from .env file
 load_dotenv()
@@ -62,6 +63,28 @@ def extract_census_variables() -> pd.DataFrame:
     else:
         return pd.DataFrame(columns=["year", "geo_id", "var_code", "NAME", "value"])
 
+# Collect census df
 census_df = extract_census_variables()
-print("\nSample census data:")
-print(census_df.head())
+
+# Define BigQuery dataset and table names
+project_id = os.environ["GCP_PROJECT"]
+dataset_id = os.environ["BIGQUERY_DATASET_BRONZE"]
+
+census_table_id = f"{project_id}.{dataset_id}.census"
+
+# Initialize BigQuery connection client
+client = bigquery.Client(project=project_id)
+
+# Load census dataframe
+job_config = bigquery.LoadJobConfig(
+    write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
+    schema = [
+        bigquery.SchemaField("year", "INTEGER"),
+        bigquery.SchemaField("geo_id", "STRING"),
+        bigquery.SchemaField("var_code", "STRING"),
+        bigquery.SchemaField("NAME", "STRING"),
+        bigquery.SchemaField("value", "FLOAT"),
+    ]
+)
+job = client.load_table_from_dataframe(census_df, census_table_id, job_config=job_config)
+job.result()
