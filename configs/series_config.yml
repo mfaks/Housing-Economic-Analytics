@@ -72,3 +72,25 @@ fred:
       treasury_30yr: DGS30
       mortgage_15yr: MORTGAGE15US
       mortgage_30yr: MORTGAGE30US
+census:
+  variables:
+    population: B01003_001E
+    median_household_income: B19013_001E
+  metros:
+    atlanta: "12060"
+    boston: "14460"
+    chicago: "16980"
+    dallas: "19100"
+    detroit: "19820"
+    los_angeles_old: "31100"
+    los_angeles_new: "31080"
+    miami: "33100"
+    minneapolis: "33460"
+    new_york: "35620"
+    phoenix: "38060"
+    san_francisco: "41860"
+    seattle: "42660"
+    tampa: "45300"
+    washington_dc: "47900"
+    denver: "19740"
+    san_diego: "41740"
