@@ -7,7 +7,7 @@ vars as (
 ),
 
 metros as (
-    select * from {{ ref('metros') }}
+    select * from {{ ref('census_metros') }}
 ),
 
 unified as (
