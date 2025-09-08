@@ -20,7 +20,7 @@ unified as (
         end as metro_code,
         s.var_code,
         s.name as census_name,
-        s.value
+        cast(s.value as int64) as value
     from source s
 )
 
