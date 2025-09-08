@@ -1,0 +1,8 @@
+sources:
+  - name: raw
+    database: housing-economic-analytics
+    schema: raw
+    tables:
+      - name: fred_rates
+      - name: fred_metros
+      - name: census
