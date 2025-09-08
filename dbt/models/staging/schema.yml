@@ -1,0 +1,10 @@
+models:
+  - name: stg_census
+    description: "Cleaned Census data with unified metro codes and variable descriptions"
+    columns:
+      - name: metro_code
+        description: "Unified metro area code (old Los Angeles 31100 mapped to 31080)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["12060","14460","16980","19100","19740","19820","31080","33100","33460","35620","38060","41740","41860","42660","45300","47900"]
