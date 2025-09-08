@@ -1,0 +1,8 @@
+series_id,indicator
+FEDFUNDS,federal_funds_rate
+PRIME,prime_rate
+DGS2,treasury_yield_2yr
+DGS10,treasury_yield_10yr
+DGS30,treasury_yield_30yr
+MORTGAGE15US,mortgage_rate_15yr
+MORTGAGE30US,mortgage_rate_30yr
