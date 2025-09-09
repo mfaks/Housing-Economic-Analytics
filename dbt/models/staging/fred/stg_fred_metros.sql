@@ -1,7 +1,6 @@
 with source as (
     select * from {{ source('raw', 'fred_metros') }}
 ),
-
 cleaned as (
     select
         date,
@@ -12,7 +11,6 @@ cleaned as (
     from source
     where geo_id is not null
 ),
-
 mapped as (
     select 
         c.date,
@@ -25,5 +23,6 @@ mapped as (
     from cleaned c
     left join {{ ref('fred_metros') }} fm on c.series_id = fm.series_id
 )
-
-select * from mapped
+select 
+    * 
+from mapped

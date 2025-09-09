@@ -45,6 +45,6 @@ seeds:
     census_metros:
       +column_types:
         metro_code: string
-        metro_name: string
-        metro_name_specific: string
+        city: string
+        region: string
         state: string
