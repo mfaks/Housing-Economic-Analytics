@@ -1,7 +1,6 @@
 with source as (
     select * from {{ source('raw', 'fred_rates') }}
 ),
-
 cleaned as (
     select
         date,
@@ -11,7 +10,6 @@ cleaned as (
         rate_type
     from source
 ),
-
 mapped as (
     select
         c.date,
@@ -22,5 +20,6 @@ mapped as (
     from cleaned c
     left join {{ ref('fred_rates') }} fr on c.series_id = fr.series_id
 )
-
-select * from mapped
+select
+    * 
+from mapped

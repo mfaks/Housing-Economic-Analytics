@@ -1,4 +1,4 @@
-metro_code,metro_name,metro_name_specific,state
+metro_code,city,region,state
 "12060",Atlanta,"Atlanta-Sandy Springs-Alpharetta, GA",GA
 "14460",Boston,"Boston-Cambridge-Newton, MA-NH",MA-NH
 "16980",Chicago,"Chicago-Naperville-Elgin, IL-IN-WI",IL-IN-WI

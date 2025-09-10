@@ -1,0 +1,22 @@
+models:
+  - name: economy_by_metro
+    description: >
+      Aggregates yearly economic indicators by metro area,
+      including home price index, consumer price index, and unemployment rate.
+    columns:
+      - name: year
+      - name: city
+      - name: home_price_index
+      - name: consumer_price_index
+      - name: unemployment_rate
+
+  - name: national_macro_indicators
+    description: >
+      Aggregates national macroeconomic rates by year, including
+      Federal Funds Rate, mortgage rates, and Treasury yields.
+    columns:
+      - name: year
+      - name: fed_funds_rate
+      - name: prime_rate
+      - name: mortgage_15yr_rate
+      - name: mortgage_30yr_rate

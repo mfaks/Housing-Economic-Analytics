@@ -1,15 +1,12 @@
 with source as (
     select * from {{ source('raw', 'census') }}
 ),
-
 vars as (
     select * from {{ ref('census_variables') }}
 ),
-
 metros as (
     select * from {{ ref('census_metros') }}
 ),
-
 unified as (
     select
         s.year,
@@ -23,15 +20,14 @@ unified as (
         cast(s.value as int64) as value
     from source s
 )
-
 select
     u.year,
     u.metro_code,
-    m.metro_name,
-    m.metro_name_specific,
+    m.city,
+    m.region,
     m.state,
     u.var_code,
-    v.var_name as variable_description,
+    v.var_name as var_description,
     u.value
 from unified u
 left join vars v on u.var_code = v.var_code

@@ -1,0 +1,22 @@
+models:
+  - name: stg_census
+    description: >
+      Staging model for Census data. Unifies metro codes, maps variable
+      descriptions, and joins against metro metadata.
+    columns:
+      - name: year
+        description: Year of the Census observation
+      - name: metro_code
+        description: Standardized metro area code (Los Angeles remapped to 31080)
+      - name: city
+        description: City name for the metro
+      - name: region
+        description: Census region of the metro
+      - name: state
+        description: State of the metro
+      - name: var_code
+        description: Census variable code
+      - name: var_description
+        description: Description of the Census variable
+      - name: value
+        description: Value for the Census variable
