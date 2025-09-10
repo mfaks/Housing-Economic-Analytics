@@ -1,0 +1,22 @@
+models:
+  - name: housing_vs_income
+    description: >
+      Compares median household income with housing prices (Case-Shiller Index)
+      across metros to compute income-to-price ratios.
+    columns:
+      - name: year
+      - name: city
+      - name: median_income
+      - name: home_price_index
+      - name: income_to_price_ratio
+
+  - name: housing_vs_population
+    description: >
+      Compares housing prices with population levels to compute 
+      price per capita in each metro.
+    columns:
+      - name: year
+      - name: city
+      - name: population
+      - name: home_price_index
+      - name: price_per_capita
