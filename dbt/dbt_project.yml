@@ -32,7 +32,17 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   housing_economic_analytics:
     staging:
+      +schema: staging
       +materialized: view
+    analytics:
+      +schema: analytics
+      +materialized: table
+
+
+# Informs dbt to not prepend the profile schema 
+dispatch:
+  - macro_namespace: dbt
+    search_order: [housing_economic_analytics, dbt]
 
 # Configuring seeds
 # Ensures metro_code and var_code columns are loaded as strings (to match raw data)
@@ -48,3 +58,12 @@ seeds:
         city: string
         region: string
         state: string
+    fred_metros:
+      +column_types:
+        series_id: string
+        metro: string
+        indicator: string
+    fred_rates:
+      +column_types:
+        series_id: string
+        rate_name: string
