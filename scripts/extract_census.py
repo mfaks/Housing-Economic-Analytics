@@ -2,11 +2,11 @@ import os
 import requests
 import pandas as pd
 import yaml
-from dotenv import load_dotenv
 from google.cloud import bigquery
+import functions_framework
 
-# Load environment variables from .env file
-load_dotenv()
+# Get the config path
+config_path = os.environ.get("CONFIG_PATH", "configs/series_config.yml")
 
 # API Configuration
 CENSUS_API_KEY = os.environ["CENSUS_API_KEY"]
@@ -18,7 +18,7 @@ START_YEAR = 2005
 END_YEAR = 2023
 
 # Load metros and variables from config
-with open("../configs/series_config.yml", "r") as f:
+with open(config_path, "r") as f:
     config = yaml.safe_load(f)
 
 metros = config["census"]["metros"]
@@ -63,28 +63,30 @@ def extract_census_variables() -> pd.DataFrame:
     else:
         return pd.DataFrame(columns=["year", "geo_id", "var_code", "NAME", "value"])
 
-# Collect census df
-census_df = extract_census_variables()
-
 # Define BigQuery dataset and table names
 project_id = os.environ["GCP_PROJECT"]
 dataset_id = os.environ["BIGQUERY_DATASET_BRONZE"]
 
-census_table_id = f"{project_id}.{dataset_id}.census"
+# Create cloud function for scheduled raw data extraction
+@functions_framework.http
+def main(request):
+    # Initialize BigQuery connection client
+    client = bigquery.Client(project=project_id)
 
-# Initialize BigQuery connection client
-client = bigquery.Client(project=project_id)
+    # Collect census df
+    census_df = extract_census_variables()
+    census_table_id = f"{project_id}.{dataset_id}.census"
 
-# Load census dataframe
-job_config = bigquery.LoadJobConfig(
-    write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
-    schema = [
-        bigquery.SchemaField("year", "INTEGER"),
-        bigquery.SchemaField("geo_id", "STRING"),
-        bigquery.SchemaField("var_code", "STRING"),
-        bigquery.SchemaField("NAME", "STRING"),
-        bigquery.SchemaField("value", "FLOAT"),
-    ]
-)
-job = client.load_table_from_dataframe(census_df, census_table_id, job_config=job_config)
-job.result()
+    # Load census dataframe
+    job_config = bigquery.LoadJobConfig(
+        write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
+        schema = [
+            bigquery.SchemaField("year", "INTEGER"),
+            bigquery.SchemaField("geo_id", "STRING"),
+            bigquery.SchemaField("var_code", "STRING"),
+            bigquery.SchemaField("NAME", "STRING"),
+            bigquery.SchemaField("value", "FLOAT"),
+        ]
+    )
+    job = client.load_table_from_dataframe(census_df, census_table_id, job_config=job_config)
+    job.result()
