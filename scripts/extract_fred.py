@@ -2,11 +2,11 @@ import os
 import requests
 import pandas as pd
 import yaml
-from dotenv import load_dotenv
 from google.cloud import bigquery
+import functions_framework
 
-# Load environment variables from .env file
-load_dotenv()
+# Get the config path
+config_path = os.environ.get("CONFIG_PATH", "configs/series_config.yml")
 
 # FRED API configuration
 FRED_API_KEY = os.environ["FRED_API_KEY"]
@@ -16,7 +16,7 @@ FRED_API_URL = os.environ["FRED_API_URL"]
 START_DATE = "1995-01-01"
 
 # Load metropolitan area configuration with FRED series IDs
-with open("../configs/series_config.yml", "r") as f:
+with open(config_path, "r") as f:
     config = yaml.safe_load(f)
 
 metros = config["fred"]["metros"]
@@ -75,44 +75,48 @@ def extract_fred_rates() -> pd.DataFrame:
     else:
         return pd.DataFrame(columns=["date", "series_id", "rate_type", "value"])
 
-# Collect metros and rates df
-metros_df = extract_fred_metros()
-rates_df = extract_fred_rates()
-
 # Define BigQuery dataset and table names
 project_id = os.environ["GCP_PROJECT"]
 dataset_id = os.environ["BIGQUERY_DATASET_BRONZE"]
 
-metros_table_id = f"{project_id}.{dataset_id}.fred_metros"
-rates_table_id = f"{project_id}.{dataset_id}.fred_rates"
+# Create cloud function for scheduled raw data extraction
+@functions_framework.http
+def main(request):
+    # Initialize BigQuery connection client
+    client = bigquery.Client(project=project_id)
 
-# Initialize BigQuery connection client
-client = bigquery.Client(project=project_id)
+    # Collect metros df and construct table id path
+    metros_df = extract_fred_metros()
+    metros_table_id = f"{project_id}.{dataset_id}.fred_metros"
 
-# Load metros dataframe
-job_config = bigquery.LoadJobConfig(
-    write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
-    schema = [
-        bigquery.SchemaField("date", "DATE"),
-        bigquery.SchemaField("series_id", "STRING"),
-        bigquery.SchemaField("geo_id", "STRING"),
-        bigquery.SchemaField("value", "FLOAT")
-    ]    
-)
-metros_df["date"] = pd.to_datetime(metros_df["date"], errors="coerce").dt.date
-job = client.load_table_from_dataframe(metros_df, metros_table_id, job_config=job_config)
-job.result()
+    # Collect rates df and construct table id path
+    rates_df = extract_fred_rates()
+    rates_table_id = f"{project_id}.{dataset_id}.fred_rates"
 
-# Load rates dataframe
-job_config = bigquery.LoadJobConfig(
-    write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
-    schema = [
-        bigquery.SchemaField("date", "DATE"),
-        bigquery.SchemaField("series_id", "STRING"),
-        bigquery.SchemaField("rate_type", "STRING"),
-        bigquery.SchemaField("value", "FLOAT")
-    ]
-)
-rates_df["date"] = pd.to_datetime(rates_df["date"], errors="coerce").dt.date
-job = client.load_table_from_dataframe(rates_df, rates_table_id)
-job.result()
+    # Load metros dataframe
+    job_config = bigquery.LoadJobConfig(
+        write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
+        schema = [
+            bigquery.SchemaField("date", "DATE"),
+            bigquery.SchemaField("series_id", "STRING"),
+            bigquery.SchemaField("geo_id", "STRING"),
+            bigquery.SchemaField("value", "FLOAT")
+        ]    
+    )
+    metros_df["date"] = pd.to_datetime(metros_df["date"], errors="coerce").dt.date
+    job = client.load_table_from_dataframe(metros_df, metros_table_id, job_config=job_config)
+    job.result()
+
+    # Load rates dataframe
+    job_config = bigquery.LoadJobConfig(
+        write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE,
+        schema = [
+            bigquery.SchemaField("date", "DATE"),
+            bigquery.SchemaField("series_id", "STRING"),
+            bigquery.SchemaField("rate_type", "STRING"),
+            bigquery.SchemaField("value", "FLOAT")
+        ]
+    )
+    rates_df["date"] = pd.to_datetime(rates_df["date"], errors="coerce").dt.date
+    job = client.load_table_from_dataframe(rates_df, rates_table_id)
+    job.result()

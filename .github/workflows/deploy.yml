@@ -1,0 +1,66 @@
+name: Deploy Cloud Functions with Terraform
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/**"
+      - "configs/**"
+      - "infra/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Zip Census function
+        run: |
+          zip -j infra/census_function.zip \
+            scripts/extract_census.py \
+            scripts/requirements.txt \
+            configs/series_config.yml
+
+      - name: Zip FRED function
+        run: |
+          zip -j infra/fred_function.zip \
+            scripts/extract_fred.py \
+            scripts/requirements.txt \
+            configs/series_config.yml
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: infra
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: infra
+        run: terraform plan \
+          -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+          -var="census_api_key=${{ secrets.CENSUS_API_KEY }}" \
+          -var="census_api_url=${{ secrets.CENSUS_API_URL }}" \
+          -var="census_api_dataset=${{ secrets.CENSUS_API_DATASET }}" \
+          -var="fred_api_key=${{ secrets.FRED_API_KEY }}" \
+          -var="fred_api_url=${{ secrets.FRED_API_URL }}" \
+          -var="bigquery_dataset_bronze=${{ secrets.BIGQUERY_DATASET_BRONZE }}" \
+          -out=tfplan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: infra
+        run: terraform apply -auto-approve tfplan
