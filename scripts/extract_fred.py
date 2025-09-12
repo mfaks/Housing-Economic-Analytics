@@ -23,7 +23,7 @@ metros = config["fred"]["metros"]
 rates = config["fred"]["rates"]
 
 # Fetch raw FRED series given a series_id
-def fetch_fred_series(series_id: str) -> pd.DataFrame:
+def fetch_fred_data(series_id: str) -> pd.DataFrame:
     params = {
         "series_id": series_id,
         "api_key": FRED_API_KEY,
@@ -53,7 +53,7 @@ def extract_fred_metros() -> pd.DataFrame:
     total_data = []
     for metro, series_dict in metros.items():
         for _, series_id in series_dict.items():
-            df = fetch_fred_series(series_id)
+            df = fetch_fred_data(series_id)
             if not df.empty:
                 df["geo_id"] = metro
                 total_data.append(df)
@@ -66,7 +66,7 @@ def extract_fred_metros() -> pd.DataFrame:
 def extract_fred_rates() -> pd.DataFrame:
     total_data = []
     for rate_name, series_id in rates.items():
-        df = fetch_fred_series(series_id)
+        df = fetch_fred_data(series_id)
         if not df.empty:
             df["rate_type"] = rate_name
             total_data.append(df)
