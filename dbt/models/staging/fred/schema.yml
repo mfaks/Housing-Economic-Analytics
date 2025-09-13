@@ -6,18 +6,30 @@ models:
     columns:
       - name: date
         description: Date of the FRED observation
+        tests:
+          - not_null
       - name: series_id
         description: FRED series ID
+        tests:
+          - not_null
       - name: year
         description: Extracted year from date
+        tests:
+          - not_null
       - name: value
         description: Reported indicator value
       - name: geo_id
         description: Metro area code from FRED
+        tests:
+          - not_null
       - name: city
         description: City name for the metro
+        tests:
+          - not_null
       - name: indicator
         description: Indicator type (e.g., Case-Shiller, CPI, Unemployment Rate)
+        tests:
+          - not_null
 
   - name: stg_fred_rates
     description: >
@@ -26,11 +38,19 @@ models:
     columns:
       - name: date
         description: Date of the FRED observation
+        tests:
+          - not_null
       - name: year
         description: Extracted year from date
+        tests:
+          - not_null
       - name: series_id
         description: FRED series ID
+        tests:
+          - not_null
       - name: value
         description: Reported rate value
       - name: rate_name
         description: Name of the macroeconomic rate (e.g., Fed Funds, Mortgage 30y)
+        tests:
+          - not_null

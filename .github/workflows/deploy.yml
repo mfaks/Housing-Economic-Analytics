@@ -50,17 +50,19 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra
-        run: terraform plan \
-          -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
-          -var="census_api_key=${{ secrets.CENSUS_API_KEY }}" \
-          -var="census_api_url=${{ secrets.CENSUS_API_URL }}" \
-          -var="census_api_dataset=${{ secrets.CENSUS_API_DATASET }}" \
-          -var="fred_api_key=${{ secrets.FRED_API_KEY }}" \
-          -var="fred_api_url=${{ secrets.FRED_API_URL }}" \
-          -var="bigquery_dataset_bronze=${{ secrets.BIGQUERY_DATASET_BRONZE }}" \
-          -out=tfplan
+        run: |
+          terraform plan \
+            -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+            -var="census_api_key=${{ secrets.CENSUS_API_KEY }}" \
+            -var="census_api_url=${{ secrets.CENSUS_API_URL }}" \
+            -var="census_api_dataset=${{ secrets.CENSUS_API_DATASET }}" \
+            -var="fred_api_key=${{ secrets.FRED_API_KEY }}" \
+            -var="fred_api_url=${{ secrets.FRED_API_URL }}" \
+            -var="bigquery_dataset_bronze=${{ secrets.BIGQUERY_DATASET_BRONZE }}" \
+            -out=tfplan
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         working-directory: infra
-        run: terraform apply -auto-approve tfplan
+        run: |
+          terraform apply -auto-approve tfplan

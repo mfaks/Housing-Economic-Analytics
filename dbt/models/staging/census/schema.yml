@@ -6,17 +6,27 @@ models:
     columns:
       - name: year
         description: Year of the Census observation
+        tests:
+          - not_null
       - name: metro_code
         description: Standardized metro area code (Los Angeles remapped to 31080)
+        tests:
+          - not_null
       - name: city
         description: City name for the metro
+        tests:
+          - not_null
       - name: region
         description: Census region of the metro
       - name: state
         description: State of the metro
       - name: var_code
         description: Census variable code
+        tests:
+          - not_null
       - name: var_description
         description: Description of the Census variable
       - name: value
         description: Value for the Census variable
+        tests:
+          - not_null
