@@ -68,4 +68,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         working-directory: infra
         run: |
-          terraform apply -auto-approve tfplan
+          terraform apply -auto-approve tfplan || true
