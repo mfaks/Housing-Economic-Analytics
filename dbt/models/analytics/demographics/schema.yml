@@ -1,25 +1,33 @@
 models:
   - name: demographics_by_metro
-    description: >
-      Aggregates demographic metrics by metro area,
-      including total population and median household income.
+    description: Aggregates demographic metrics by metro area
     columns:
       - name: year
+        tests: [not_null]
       - name: metro_code
+        tests: [not_null]
       - name: city
-      - name: region
-      - name: state
+        tests: [not_null]
       - name: total_population
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_census')
+              field: metro_code
       - name: median_household_income
+        tests: [not_null]
 
   - name: population_growth_rate
-    description: >
-      Computes year-over-year population growth rates for each metro area.
+    description: Computes year-over-year population growth rates for each metro
     columns:
       - name: year
+        tests: [not_null]
       - name: metro_code
+        tests: [not_null]
       - name: city
-      - name: region
-      - name: state
+        tests: [not_null]
       - name: total_population
+        tests: [not_null]
       - name: population_growth_rate
+        tests:
+          - not_null
