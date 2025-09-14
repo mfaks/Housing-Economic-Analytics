@@ -12,7 +12,7 @@ const dashboards = [
     id: "demographics", 
     title: "Demographics", 
     icon: Users,
-    iframeUrl: ""
+    iframeUrl: "https://lookerstudio.google.com/embed/reporting/cf8c24fc-d7ec-4898-a97b-ce9537ad5f61/page/detXF"
   },
   { 
     id: "housing", 
