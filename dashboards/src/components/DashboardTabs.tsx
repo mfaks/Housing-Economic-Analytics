@@ -18,7 +18,7 @@ const dashboards = [
     id: "housing", 
     title: "Housing", 
     icon: Home,
-    iframeUrl: ""
+    iframeUrl: "https://lookerstudio.google.com/embed/reporting/fe92c6b6-8c46-4a50-b9be-e0e55aba064f/page/aJcXF"
   }
 ]
 
