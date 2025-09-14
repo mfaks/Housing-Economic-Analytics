@@ -2,9 +2,24 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { TrendingUp, Users, Home } from "lucide-react"
 
 const dashboards = [
-  { id: "economics", title: "Economics", icon: TrendingUp },
-  { id: "demographics", title: "Demographics", icon: Users },
-  { id: "housing", title: "Housing", icon: Home }
+  { 
+    id: "economics", 
+    title: "Economics", 
+    icon: TrendingUp,
+    iframeUrl: "https://lookerstudio.google.com/embed/reporting/c25846e6-905a-4f81-b789-b7b2180b195b/page/aHtXF"
+  },
+  { 
+    id: "demographics", 
+    title: "Demographics", 
+    icon: Users,
+    iframeUrl: ""
+  },
+  { 
+    id: "housing", 
+    title: "Housing", 
+    icon: Home,
+    iframeUrl: ""
+  }
 ]
 
 export function DashboardTabs() {
@@ -22,9 +37,22 @@ export function DashboardTabs() {
 
       {dashboards.map((dashboard) => (
         <TabsContent key={dashboard.id} value={dashboard.id}>
-            <div className="flex items-center justify-center h-full">
-              <p className="text-lg leading-8 text-muted-foreground">Dashboard content coming soon</p>
-            </div>
+          <div className="w-full h-screen" style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <iframe
+              src={dashboard.iframeUrl}
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              style={{ 
+                border: 'none',
+                borderRadius: '8px',
+                minHeight: '600px'
+              }}
+              allowFullScreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+              title={`${dashboard.title} Dashboard`}
+            />
+          </div>
         </TabsContent>
       ))}
     </Tabs>
