@@ -55,6 +55,13 @@ Housing-Economic-Analytics follows a medallion data architecture with modular co
 - **Visualization**: Looker Studio dashboards visualize affordability, demographic trends, and economic indicators
 - **Frontend**: React + Vite app embeds dashboards and provides a polished UI
 
+## Key Findings 📊  
+
+- **Housing Affordability Divergence**: Major metros (e.g., San Francisco, Seattle, New York) show home price growth far outpacing median household income, worsening affordability over the past 5 years.  
+- **Income & Housing Correlation**: Regions with higher median incomes tend to have significantly higher housing prices, but the affordability ratio (home price ÷ income) varies widely across states.  
+- **Interest Rate Sensitivity**: Mortgage affordability sharply declined in 2022–2023 as interest rates rose, even in regions where home prices plateaued.  
+- **Population Growth Hotspots**: States like Texas and Florida show rising population alongside faster-than-average housing price growth, suggesting migration-driven demand.  
+
 ## Contributing 🤝
 
 To contribute:
